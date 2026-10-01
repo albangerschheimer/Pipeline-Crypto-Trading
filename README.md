@@ -38,16 +38,24 @@ Une clé CoinGecko gratuite s'obtient sur [coingecko.com/en/api](https://www.coi
 
 ```
 .
+├── pipeline/
+│   ├── config.py      # Lecture du .env (clé API)
+│   ├── binance.py     # Client Binance : bougies, paires USDT
+│   ├── coingecko.py   # Client CoinGecko : classement, données sociales
+│   └── universe.py    # Univers des 50 cryptos (hors stablecoins et or tokenisé)
+├── main.py            # Point d'entrée
 ├── explore.ipynb      # Exploration des API Binance et CoinGecko
 ├── .env.example       # Modèle des variables d'environnement (sans valeurs)
 └── requirements.txt   # Dépendances Python
 ```
 
+Lancer : `.venv/bin/python main.py`
+
 ## Avancement
 
 - [x] Exploration des API (notebook)
-- [ ] **Étape 0** : projet reproductible (README, dépendances, secrets)
-- [ ] **Étape 1** : passer du notebook à des modules Python
+- [x] **Étape 0** : projet reproductible (README, dépendances, secrets)
+- [x] **Étape 1** : passer du notebook à des modules Python
 - [ ] **Étape 2** : extraction robuste (pagination, rate limits, retries, logging)
 - [ ] **Étape 3** : stockage en base de données
 - [ ] **Étape 4** : ingestion incrémentale et idempotente
