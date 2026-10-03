@@ -1,4 +1,4 @@
-import httpx
+from pipeline.http import get_json
 from datetime import datetime, timezone
 
 BASE_URL = "https://api.binance.com/api/v3"
@@ -25,15 +25,11 @@ def parse_klines(raw_klines: list) -> list[dict]:
 
 def get_klines(symbol: str, interval: str = "1m", limit: int = 500) -> list[dict]:
     params = {"symbol": symbol, "interval": interval, "limit": limit}
-    response = httpx.get(f"{BASE_URL}/klines", params=params)
-    response.raise_for_status()
-    return parse_klines(response.json())
+    return parse_klines(get_json(f"{BASE_URL}/klines", params=params))
 
 
 def get_usdt_symbols() -> set[str]:
-    response = httpx.get(f"{BASE_URL}/exchangeInfo")
-    response.raise_for_status()
-    data = response.json()
+    data = get_json(f"{BASE_URL}/exchangeInfo")
     return {
         s["symbol"]
         for s in data["symbols"]
