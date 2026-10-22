@@ -35,3 +35,16 @@ def get_usdt_symbols() -> set[str]:
         for s in data["symbols"]
         if s["quoteAsset"] == "USDT" and s["status"] == "TRADING"
     }
+
+def get_klines_range(symbol: str, start: datetime, end: datetime, interval: str = "1m") -> list[dict]:
+    cursor = int(start.timestamp() * 1000)
+    end_ts = int(end.timestamp() * 1000)
+    raw_klines = []
+    while cursor < end_ts:
+        params = {"symbol": symbol, "interval": interval, "startTime": cursor, "endTime": end_ts, "limit": 1000}
+        batch = get_json(f"{BASE_URL}/klines", params=params)
+        if not batch:
+            break
+        raw_klines.extend(batch)
+        cursor = batch[-1][6]
+    return parse_klines(raw_klines)
