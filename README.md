@@ -44,14 +44,42 @@ Une clé CoinGecko gratuite s'obtient sur [coingecko.com/en/api](https://www.coi
 │   ├── coingecko.py   # Client CoinGecko : classement, données sociales (30 appels/min)
 │   ├── db.py          # Base SQLite : table klines, écriture, dernière bougie connue
 │   ├── http.py        # get_json : nouvelles tentatives et logging
+│   ├── quality.py     # Contrôles qualité : prix incohérents, trous
+│   ├── backtest.py    # Moyennes mobiles et simulation de la stratégie
 │   └── universe.py    # Univers des 50 cryptos (hors stablecoins et or tokenisé)
-├── main.py            # Point d'entrée : télécharge les bougies 1h des 50 cryptos dans crypto.db
+├── main.py            # Pipeline : télécharge les bougies 1h des 50 cryptos dans crypto.db
+├── run_backtest.py    # Backtest de la stratégie sur toute la base
+├── test_backtest.py   # Vérifications du backtest
 ├── explore.ipynb      # Exploration des API Binance et CoinGecko
 ├── .env.example       # Modèle des variables d'environnement (sans valeurs)
 └── requirements.txt   # Dépendances Python
 ```
 
-Lancer : `.venv/bin/python main.py`
+## Utilisation
+
+```bash
+.venv/bin/python main.py           # récupère les nouvelles bougies (180 jours au premier lancement)
+.venv/bin/python run_backtest.py   # teste la stratégie sur les données en base
+.venv/bin/python test_backtest.py  # vérifie les calculs du backtest
+```
+
+`main.py` se termine avec le code `1` si une crypto a échoué ou si un contrôle qualité a trouvé un problème.
+
+## Stratégie
+
+Croisement de moyennes mobiles sur les bougies 1h : investi quand la moyenne des 20 dernières clôtures passe au-dessus de celle des 50 dernières, hors marché sinon. Frais de 0,1 % par ordre. La position est décidée à la clôture d'une bougie et appliquée à la suivante (pas de triche sur les prix futurs).
+
+Résultat sur 180 jours (octobre 2026) : +12,1 % en moyenne contre +31,1 % pour le buy & hold, la stratégie ne bat le buy & hold que sur 20 cryptos sur 50. Une stratégie aussi simple ne suffit pas : c'est le point de départ pour en tester d'autres.
+
+## Automatisation
+
+Lancer le pipeline toutes les heures avec cron (`crontab -e`) :
+
+```
+5 * * * * cd /Users/alban/GitHub/Pipeline-Crypto-Trading && .venv/bin/python main.py >> pipeline.log 2>&1
+```
+
+À la 5ᵉ minute de chaque heure, pour que la bougie précédente soit clôturée. Si le Mac est en veille, le lancement est manqué, mais le suivant rattrape tout seul les bougies manquantes grâce à l'ingestion incrémentale.
 
 ## Avancement
 
@@ -62,6 +90,6 @@ Lancer : `.venv/bin/python main.py`
 - [x] **Étape 3** : stockage en base de données
 - [x] **Étape 4** : ingestion incrémentale et idempotente
 - [x] **Étape 5** : contrôles qualité (cohérence des prix, trous)
-- [ ] **Étape 6** : stratégie et backtest (avec ses indicateurs)
-- [ ] **Étape 7** : automatisation (cron)
+- [x] **Étape 6** : stratégie et backtest (avec ses indicateurs)
+- [x] **Étape 7** : automatisation (cron)
 - [ ] *Optionnel* : tableau de bord
