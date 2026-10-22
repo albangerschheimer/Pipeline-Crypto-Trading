@@ -40,10 +40,12 @@ Une clé CoinGecko gratuite s'obtient sur [coingecko.com/en/api](https://www.coi
 .
 ├── pipeline/
 │   ├── config.py      # Lecture du .env (clé API)
-│   ├── binance.py     # Client Binance : bougies, paires USDT
-│   ├── coingecko.py   # Client CoinGecko : classement, données sociales
+│   ├── binance.py     # Client Binance : bougies (paginées), paires USDT
+│   ├── coingecko.py   # Client CoinGecko : classement, données sociales (30 appels/min)
+│   ├── db.py          # Base SQLite : table klines, écriture, dernière bougie connue
+│   ├── http.py        # get_json : nouvelles tentatives et logging
 │   └── universe.py    # Univers des 50 cryptos (hors stablecoins et or tokenisé)
-├── main.py            # Point d'entrée
+├── main.py            # Point d'entrée : télécharge les bougies 1h des 50 cryptos dans crypto.db
 ├── explore.ipynb      # Exploration des API Binance et CoinGecko
 ├── .env.example       # Modèle des variables d'environnement (sans valeurs)
 └── requirements.txt   # Dépendances Python
@@ -56,9 +58,9 @@ Lancer : `.venv/bin/python main.py`
 - [x] Exploration des API (notebook)
 - [x] **Étape 0** : projet reproductible (README, dépendances, secrets)
 - [x] **Étape 1** : passer du notebook à des modules Python
-- [ ] **Étape 2** : extraction robuste (pagination, rate limits, retries, logging)
-- [ ] **Étape 3** : stockage en base de données
-- [ ] **Étape 4** : ingestion incrémentale et idempotente
+- [x] **Étape 2** : extraction robuste (pagination, rate limits, retries, logging)
+- [x] **Étape 3** : stockage en base de données
+- [ ] **Étape 4** : ingestion incrémentale et idempotente (incrémental fait)
 - [ ] **Étape 5** : qualité des données et tests
 - [ ] **Étape 6** : transformations et indicateurs
 - [ ] **Étape 7** : stratégie et backtest
