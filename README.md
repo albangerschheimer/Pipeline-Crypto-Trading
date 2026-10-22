@@ -61,8 +61,7 @@ Lancer : `.venv/bin/python main.py`
 - [x] **Étape 2** : extraction robuste (pagination, rate limits, retries, logging)
 - [x] **Étape 3** : stockage en base de données
 - [x] **Étape 4** : ingestion incrémentale et idempotente
-- [ ] **Étape 5** : qualité des données et tests
-- [ ] **Étape 6** : transformations et indicateurs
-- [ ] **Étape 7** : stratégie et backtest
-- [ ] **Étape 8** : automatisation
-- [ ] **Étape 9** : tableau de bord
+- [ ] **Étape 5** : contrôles qualité (cohérence des prix, trous)
+- [ ] **Étape 6** : stratégie et backtest (avec ses indicateurs)
+- [ ] **Étape 7** : automatisation (cron)
+- [ ] *Optionnel* : tableau de bord
