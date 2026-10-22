@@ -14,6 +14,7 @@ conn = connect()
 init_db(conn)
 
 INTERVAL = "1h"
+HISTORY_DAYS = 180
 end = datetime.now(timezone.utc)
 
 failures = []
@@ -21,7 +22,7 @@ failures = []
 for crypto in build_universe():
     symbol = crypto["binance_symbol"]
     try:
-        start = get_last_open_time(conn, symbol, INTERVAL) or end - timedelta(days=30)
+        start = get_last_open_time(conn, symbol, INTERVAL) or end - timedelta(days=HISTORY_DAYS)
         klines = get_klines_range(symbol, start, end, interval=INTERVAL)
         save_klines(conn, symbol, INTERVAL, klines)
         log.info("%s : %d bougies depuis %s", symbol, len(klines), start)
