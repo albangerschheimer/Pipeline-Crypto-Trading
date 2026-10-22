@@ -1,4 +1,5 @@
 import logging
+import sys
 from datetime import datetime, timedelta, timezone
 
 from pipeline.binance import get_klines_range
@@ -14,9 +15,19 @@ init_db(conn)
 INTERVAL = "1h"
 end = datetime.now(timezone.utc)
 
+failures = []
+
 for crypto in build_universe():
     symbol = crypto["binance_symbol"]
-    start = get_last_open_time(conn, symbol, INTERVAL) or end - timedelta(days=30)
-    klines = get_klines_range(symbol, start, end, interval=INTERVAL)
-    save_klines(conn, symbol, INTERVAL, klines)
-    log.info("%s : %d bougies depuis %s", symbol, len(klines), start)
+    try:
+        start = get_last_open_time(conn, symbol, INTERVAL) or end - timedelta(days=30)
+        klines = get_klines_range(symbol, start, end, interval=INTERVAL)
+        save_klines(conn, symbol, INTERVAL, klines)
+        log.info("%s : %d bougies depuis %s", symbol, len(klines), start)
+    except Exception:
+        log.exception("Erreur lors de la récupération des bougies pour %s", symbol)
+        failures.append(symbol)
+
+log.info("Récupération des bougies terminée avec %d échec(s) : %s", len(failures), ", ".join(failures))
+sys.exit(1 if failures else 0)
+

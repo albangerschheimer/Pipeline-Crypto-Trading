@@ -60,7 +60,7 @@ Lancer : `.venv/bin/python main.py`
 - [x] **Étape 1** : passer du notebook à des modules Python
 - [x] **Étape 2** : extraction robuste (pagination, rate limits, retries, logging)
 - [x] **Étape 3** : stockage en base de données
-- [ ] **Étape 4** : ingestion incrémentale et idempotente (incrémental fait)
+- [x] **Étape 4** : ingestion incrémentale et idempotente
 - [ ] **Étape 5** : qualité des données et tests
 - [ ] **Étape 6** : transformations et indicateurs
 - [ ] **Étape 7** : stratégie et backtest
