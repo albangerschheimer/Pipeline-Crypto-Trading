@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 from pipeline.binance import get_klines_range
 from pipeline.db import connect, get_last_open_time, init_db, save_klines
+from pipeline.quality import count_gaps, count_invalid_klines
 from pipeline.universe import build_universe
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -29,5 +30,10 @@ for crypto in build_universe():
         failures.append(symbol)
 
 log.info("Récupération des bougies terminée avec %d échec(s) : %s", len(failures), ", ".join(failures))
-sys.exit(1 if failures else 0)
+
+invalid = count_invalid_klines(conn)
+gaps = count_gaps(conn, INTERVAL, 3600)
+log.info("Qualité : %d bougies incohérentes, %d trous", invalid, gaps)
+
+sys.exit(1 if failures or invalid or gaps else 0)
 
