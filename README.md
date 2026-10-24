@@ -1,8 +1,16 @@
 # Pipeline Crypto Trading
 
-Pipeline de données qui collecte les prix (Binance) et les données de marché (CoinGecko) d'un univers de 50 cryptomonnaies, pour les stocker, les transformer et tester des stratégies de trading.
+Pipeline de données qui collecte chaque heure les prix (Binance) des 50 plus grosses cryptomonnaies (CoinGecko), les stocke dans une base SQLite, contrôle leur qualité et backteste une stratégie de trading.
 
-> Projet d'apprentissage, construit étape par étape.
+> ⚠️ Projet éducatif. Rien ici n'est un conseil en investissement.
+
+## Fonctionnalités
+
+- **Univers dynamique** : les 50 plus grosses capitalisations tradables en USDT sur Binance, hors stablecoins et or tokenisé (via les catégories CoinGecko)
+- **Extraction robuste** : pagination de l'historique, respect des limites d'appels, nouvelles tentatives avec backoff exponentiel
+- **Ingestion incrémentale et idempotente** : seules les nouvelles bougies sont téléchargées, et relancer le pipeline ne crée jamais de doublons
+- **Contrôles qualité** : prix incohérents et trous entre bougies
+- **Backtest** d'un croisement de moyennes mobiles, avec frais et sans biais du futur
 
 ## Sources de données
 
@@ -76,20 +84,12 @@ Résultat sur 180 jours (octobre 2026) : +12,1 % en moyenne contre +31,1 % pour 
 Lancer le pipeline toutes les heures avec cron (`crontab -e`) :
 
 ```
-5 * * * * cd /Users/alban/GitHub/Pipeline-Crypto-Trading && .venv/bin/python main.py >> pipeline.log 2>&1
+5 * * * * cd /chemin/vers/Pipeline-Crypto-Trading && .venv/bin/python main.py >> pipeline.log 2>&1
 ```
 
-À la 5ᵉ minute de chaque heure, pour que la bougie précédente soit clôturée. Si le Mac est en veille, le lancement est manqué, mais le suivant rattrape tout seul les bougies manquantes grâce à l'ingestion incrémentale.
+À la 5ᵉ minute de chaque heure, pour que la bougie précédente soit clôturée. Si la machine est en veille, le lancement est manqué, mais le suivant rattrape tout seul les bougies manquantes grâce à l'ingestion incrémentale.
 
-## Avancement
 
-- [x] Exploration des API (notebook)
-- [x] **Étape 0** : projet reproductible (README, dépendances, secrets)
-- [x] **Étape 1** : passer du notebook à des modules Python
-- [x] **Étape 2** : extraction robuste (pagination, rate limits, retries, logging)
-- [x] **Étape 3** : stockage en base de données
-- [x] **Étape 4** : ingestion incrémentale et idempotente
-- [x] **Étape 5** : contrôles qualité (cohérence des prix, trous)
-- [x] **Étape 6** : stratégie et backtest (avec ses indicateurs)
-- [x] **Étape 7** : automatisation (cron)
-- [ ] *Optionnel* : tableau de bord
+## Licence
+
+[MIT](LICENSE) : tu peux réutiliser, modifier et redistribuer ce code librement, en gardant la mention de copyright.
