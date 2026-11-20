@@ -93,3 +93,7 @@ Lancer le pipeline toutes les heures avec cron (`crontab -e`) :
 ## Licence
 
 [MIT](LICENSE) : tu peux réutiliser, modifier et redistribuer ce code librement, en gardant la mention de copyright.
+
+---
+
+*Dernière mise à jour : novembre 2026.*
